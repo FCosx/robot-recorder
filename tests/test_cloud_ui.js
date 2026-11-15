@@ -45,7 +45,7 @@ const sample = {radio_connected: true, synchronized: true, cloud: {
     const script = html.split('<script>')[1].split('</script>')[0];
     new vm.Script(script);
     assert.doesNotMatch(html, /<h2>Cloud upload<\/h2>/);
-    const recordings = html.split('<h2>Recordings on the Pi</h2>')[1];
+    const recordings = html.split(/<h2>Recordings on the (?:Pi|recorder)<\/h2>/)[1];
     assert.match(recordings, /id="cloud-mode"/);
     assert.match(recordings, /id="refresh-recordings"/);
     assert.match(recordings, /id="cloud-status"/);
@@ -95,7 +95,7 @@ const sample = {radio_connected: true, synchronized: true, cloud: {
     assert.deepEqual(JSON.parse(JSON.stringify(calls[0][1])), {mode:'automatic'});
     draw({...sample.cloud, mode:'automatic'});
     assert.equal(node('cloud-mode').attributes['aria-checked'], 'true');
-    assert.match(node('cloud-mode-help').textContent, /Pi is idle/);
+    assert.match(node('cloud-mode-help').textContent, /(?:Pi|the recorder) is idle/);
     if (remote) {
       context.draw({...sample, radio_connected:false});
       assert.equal(node('cloud-status').className, 'badge bad');

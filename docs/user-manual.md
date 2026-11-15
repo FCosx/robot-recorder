@@ -4,7 +4,7 @@
 
 This branch uses a **maintainer-prepared Lenovo running Ubuntu 24.04 / ROS 2 Jazzy**, with recordings on its **internal NVMe**. Robots publish ROS topics; the Lenovo receives them over Ethernet/Zenoh. Only the robot needs the bridge installer. A browser-only computer needs no ROS. The receiver backend, LoRa pairing and cloud access are provisioned privately by the maintainer.
 
-Some UI labels, including **Recordings on the Pi**, still refer to the original hardware; they mean the Lenovo recorder here. This branch does not install the private backend on a blank computer.
+The local page uses **Recordings on the recorder**. The prepared recorder runs the tested Linux executable and starts its services when Ubuntu boots. This branch does not provision a blank recorder; maintainers can use the [executable notes](https://github.com/FCosx/robot-recorder/blob/lenovo-recorder/docs/recorder-executable.md).
 
 ## First-time setup
 
@@ -57,7 +57,7 @@ After the one-time setup, power on the bundle and robot, start the robot's publi
 2. Click **Refresh topics**, then select the topics to save. Under **Split MCAP files**, optionally enter a size in MiB, a duration in seconds, or both. Leave both blank for one file; the first limit reached starts a new segment.
 3. Click **Begin recording**. The timer starts when the recorder subscribes to the first selected topic. Completed bag duration measures the first-to-last recorded message interval, so it may differ slightly.
 4. Click **Stop recording** and wait for finalization. The size may still increase while buffered messages are saved. Keep the recorder powered until it finishes.
-5. In **Recordings on the Pi**, use **View topics** for size, duration, total/per-topic counts and average Hz. All MCAP segments belong to the same recording. **Download** saves a TAR copy to the computer running the browser. **Delete** permanently removes that recording from the recorder.
+5. In **Recordings on the recorder**, use **View topics** for size, duration, total/per-topic counts and average Hz. All MCAP segments belong to the same recording. **Download** saves a TAR copy to the computer running the browser. **Delete** permanently removes that recording from the recorder.
 
 The local list shows 10 recordings per page. Available topics have an internal scrollbar. Opening the page or clicking **Refresh topics** requests one robot-local bandwidth snapshot of about one second. **—** means no usable estimate, not zero; selected topics show a combined estimate. Temporary subscribers save no sensor data and must close before recording starts. Estimates do not guarantee that every message will be recorded.
 
@@ -77,7 +77,7 @@ Follow the [LoRa Remote Guide](lora-remote.md) for distant topic selection, Star
 
 ## Optional cloud upload
 
-After the maintainer configures cloud access, use the controls beside **Refresh recordings** in **Recordings on the Pi**:
+After the maintainer configures cloud access, use the controls beside **Refresh recordings** in **Recordings on the recorder**:
 
 - **Manual upload** is the initial mode. Choose **Upload to cloud** on each completed recording you want to upload.
 - Switch to **Automatic upload** and confirm to upload completed recordings when the recorder is idle, including older local recordings.
@@ -96,7 +96,7 @@ Open **https://154.8.234.96** on any computer with internet access. It does not 
 
 1. Ask the project maintainer for your **individual cloud account**. Login details are supplied privately; there is no public registration or default login in this guide.
 2. Open the website and choose **Sign in**. If prompted, set your own password of at least 12 characters, then sign in again.
-3. A researcher sees only the recorders assigned to their account. This website account is separate from the recorder, router and cloud-provider accounts. Contact the maintainer for account access or a password reset.
+3. Ordinary accounts can access the current recorder. This website account is separate from the recorder, router and cloud-provider accounts. Contact the maintainer for a new account or password reset.
 
 ### Browse and download
 
@@ -105,18 +105,20 @@ Open **https://154.8.234.96** on any computer with internet access. It does not 
 - **Download bag** saves the complete TAR archive to the computer running the browser. Extract it and keep `metadata.yaml` and every referenced `.mcap` segment together. Individual files are also available under **View topics → Individual files**.
 - **Preview data** opens **Single topic** or **Synchronized** (up to four topics). Choose topics and **Image resolution**: **Fast** (up to 480×270) or **HD** (up to 1280×720), preserving aspect ratio and never enlarging smaller images.
 - Click **Start preview**. It prepares data, then plays across the recording; **Pause/Resume** controls playback. Drag the shared timeline to inspect a position; synchronized panels update together. **Stop loading** cancels preparation; **Retry preview** retries an interrupted read.
-- Preview images/point clouds are sampled copies. HD is a size cap, not guaranteed original resolution. Originals and downloads are unchanged. A first uncached preparation or long recording may take longer or buffer; browser rendering and bounded caching keep full-resolution processing off the server.
+- Preview images/point clouds are sampled copies. HD is a size cap, not guaranteed original resolution. Originals and downloads are unchanged. A first uncached preparation or long recording may take longer or buffer; the server prepares bounded preview copies and the browser renders them. Cached indexes are reused; an unsupported topic falls back independently to original-file reads. Standard LaserScan is supported, but a dedicated 2D scan display remains future work.
 - Deleting a local recording affects only its local copy. Administrators manage cloud copies separately: **Delete** moves to **Trash**, **Restore** recovers it, and confirmed **Delete permanently** frees its storage. Trash still uses space. Automatic deletion remains off; no independent bag backup is promised. Sign out on shared computers.
 
 ### For project administrators
 
-In **Users**, choose **Researcher**, assign the required recorder(s), then **Create account**. Share the generated temporary password privately; the user changes it at first sign-in. Use **Recorder access** to adjust permissions, **Reset password** to recover access, or **Disable** to withdraw access. Ordinary cloud users need no server or cloud-provider login.
+In **Users**, enter a username and choose **Create account**. Share its generated temporary password privately; the user chooses a new password at first sign-in. There are no role or recorder-access selectors for this single-recorder setup.
+
+For other accounts, **Reset password** issues a new temporary password; **Delete account** removes access and sessions while keeping recordings. The sole administrator cannot be deleted or randomly reset. To change the administrator's password, use **Change password**, enter the current password and your chosen new password twice (at least 12 characters). Enable/Disable controls are not provided. Ordinary users need no server or cloud-provider login.
 
 ### Common problems
 
 - **Website will not open:** check the internet connection and the full `https://` address, then contact the maintainer if it remains unavailable. No special networking client is required for this cloud website.
 - **Sign-in fails:** ask the maintainer to check the account or reset its password.
-- **A recording is missing:** confirm **Uploaded to cloud** on the recorder/LoRa page, refresh the cloud library, and ask the maintainer to check your recorder permissions. An unfinished upload is not listed as complete.
+- **A recording is missing:** confirm **Uploaded to cloud** on the recorder/LoRa page, refresh the cloud library, and ask the maintainer to check your account. An unfinished upload is not listed as complete.
 
 ## Troubleshooting
 

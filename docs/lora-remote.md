@@ -6,7 +6,7 @@ The main interface is the recorder's local network page. First follow the [Recor
 
 Compatible USB LoRa radios let an operator laptop select ROS 2 topics, start/stop recording and view recorder status. Recordings remain on the recorder; sensor data does not travel over LoRa.
 
-This Lenovo branch uses the existing recorder protocol and pairing; the remote does not need ROS. Some UI labels still say Pi.
+This Lenovo beta keeps the existing recorder protocol and pairing; the remote does not need ROS. Update with this release's installer to keep its guides and client matched.
 
 ## First-time installation
 
@@ -16,7 +16,7 @@ Download and install on the **operator laptop**:
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/recorder-lora-remote/releases/download/lenovo-v0.13.0/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/download/lenovo-v0.14.0-beta.1/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -80,7 +80,7 @@ After recording finishes, the remote automatically refreshes the list once. When
 
 Share the pairing passcode privately. Do not publish decrypted `remote.json` files or private pre-paired installers. Encrypting a pairing file does not encrypt the radio messages. Range must be tested at the actual location.
 
-The installer includes pySerial 3.5; see [Third-party notices](https://github.com/FCosx/recorder-lora-remote/blob/lenovo-recorder/THIRD_PARTY_NOTICES.md).
+The installer includes pySerial 3.5; see [Third-party notices](https://github.com/FCosx/robot-recorder/blob/lenovo-recorder/THIRD_PARTY_NOTICES.md).
 
 ## Status update interval
 

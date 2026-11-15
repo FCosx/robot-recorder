@@ -6,7 +6,7 @@
 
 通过 USB LoRa 电台选择 ROS 2 话题、开始/停止录制，并查看记录器状态。数据保存在记录器，不通过 LoRa 传输。
 
-此 Lenovo 分支保持原有协议和配对；远端无需 ROS，部分 UI 文案仍称 Pi。
+此 Lenovo beta 保持现有协议和配对，远端无需 ROS；使用本版本安装器更新，可保持客户端与手册匹配。
 
 ## 首次安装
 
@@ -14,7 +14,7 @@
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/recorder-lora-remote/releases/download/lenovo-v0.13.0/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/download/lenovo-v0.14.0-beta.1/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -76,7 +76,7 @@ python3 -B ~/robot-recorder/tools/lora_recorder.py remote-stop
 
 配对口令需私下交付；不要公开解密后的 `remote.json` 或私有预配对安装包。配对文件加密不等于无线数据加密。远距离效果需实测。
 
-安装包含 pySerial 3.5，许可见 [第三方说明](https://github.com/FCosx/recorder-lora-remote/blob/lenovo-recorder/THIRD_PARTY_NOTICES.md)。
+安装包含 pySerial 3.5，许可见 [第三方说明](https://github.com/FCosx/robot-recorder/blob/lenovo-recorder/THIRD_PARTY_NOTICES.md)。
 
 ## 状态更新间隔
 

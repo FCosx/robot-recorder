@@ -1,25 +1,27 @@
-# Robot Recorder — Lenovo 开发分支
+# Robot Recorder — Lenovo 测试版
 
 [English](README.md) | **简体中文**
 
-此分支记录已经验收的 Lenovo 临时录制器：**Ubuntu 24.04 / ROS 2 Jazzy，内部 NVMe 存储**，保留浏览器、Zenoh、LoRa 和云端上传功能。当前机器人为 **Orin NX / ROS 2 Humble**，连接 RealSense 与 N10P 雷达。本地录制是主要功能，LoRa 与云端为可选增强。
+当前 beta 使用**已配置好的 Lenovo：Ubuntu 24.04 / ROS 2 Jazzy，内部 NVMe 存储**。机器人通过以太网/Zenoh 传输标准 ROS 话题，用户在浏览器选择并录制。本地录制为主要功能，LoRa 控制与云端为可选增强。
 
-先看[记录器使用手册](docs/user-manual.zh-CN.md)。先确认记录器有线 IP；当前 Lenovo 是 **192.168.1.102**。启动机器人的 ROS 发布器并完成桥安装后，再打开 **http://192.168.1.102:8080**。仅打开网页的电脑无需 ROS 或桥。
+**已验证演示速率：110 MiB/s 连续 3 分钟（180 秒），测试配置下无消息缺失。** 见[验收与限制](docs/lenovo-validation.zh-CN.md)。
+
+先按[使用手册](docs/user-manual.zh-CN.md)确认记录器有线地址，启动机器人发布器并完成桥安装，再打开网页。当前已配置 Lenovo 为 **http://192.168.1.102:8080**。仅打开网页的电脑无需安装 ROS 或桥。
 
 ## 功能
 
-- 勾选标准 ROS 话题；在两个 UI 修改机器人桥监听域并跨重启保存，接收端固定为 **1**。
-- MCAP 录到 NVMe，按大小/时间切包，查看消息数/Hz，通过局域网下载并删除已完成录制。
-- 显示 CPU 温度、空间与录制告警，包括接收缓冲溢出风险。
-- 可选 [LoRa 控制](docs/lora-remote.zh-CN.md)：选话题、启停、切包、状态；远端电脑无需记录器 IP 或现场网络。传感器数据仍经 Ethernet/Zenoh。
-- 可选云端：带索引 Zstandard 压缩、手动/空闲自动上传、停止/继续且录制优先。[云端网页](docs/user-manual.zh-CN.md#云端网页)提供账号登录、下载、单话题/四话题完整时间轴预览、Fast/HD 及管理员回收站/恢复。
+- 选择话题，刷新时估算带宽和所选合计；录制前关闭临时测量订阅。
+- 在任一 UI 修改并保存机器人 ROS 域，接收端固定为 **1**。
+- MCAP 录到 NVMe，按大小/时间切包，查看数量/Hz/告警，通过局域网下载或删除已完成录制。
+- 显示 CPU 温度、剩余空间、录制状态及简短连接/丢失风险告警。
+- 可选 [LoRa 远控](docs/lora-remote.zh-CN.md)：选话题、启停、切包、状态和录制管理。数据仍经以太网/Zenoh，远端无需记录器 IP 或现场网络。
+- 可选 HTTPS 压缩上传：手动/空闲自动、停止/继续、校验完成标记，始终录制优先。
+- [云端网页](docs/user-manual.zh-CN.md#云端网页)：个人账号、下载、单话题/四话题同步时间轴、Fast/HD、空间显示及管理员回收站/恢复/永久删除。自动删除仍关闭。
 
-## 分支与安装包
+## Beta 安装包
 
-使用 [Lenovo 分支安装包](https://github.com/FCosx/recorder-lora-remote/releases/tag/lenovo-v0.13.0)，包含匹配的 LoRa 安装器与 x86_64/ARM64 v2 桥。它是独立的 **prerelease**，[main](https://github.com/FCosx/recorder-lora-remote/tree/main) 保留 Pi 版本。已经准备好的记录器提供正常机器人安装入口，用户无需编译。
+[Lenovo beta v0.14.0-beta.1](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1)包含匹配的 LoRa 安装器、经过校验的 x86_64/ARM64 v2 桥包及校验和。另附已验收的 Lenovo Linux 可执行程序，供维护者更新已配置记录器，见[可执行程序说明](docs/recorder-executable.zh-CN.md)。普通用户无需编译。
 
-公开分支仅包含安装工具、LoRa 客户端、加密配对文件、说明书和桥的构建信息。录制/云端后端源码、登录凭据、解密配对及运行数据库仍私有，由维护者准备。仅克隆此仓库不能在空白 Lenovo 上安装完整录制后端。
+此分支是项目当前最新版本；[main](https://github.com/FCosx/robot-recorder/tree/main)保留稳定 Pi 版本，本 beta 不替换其发布。公开内容包括安装工具、LoRa 客户端源码、手册、加密配对文件和 Lenovo 编译产物；不公开录制/云后端源码、登录凭据、解密配对、数据库或原始录制。克隆仓库或解压可执行包不能在空白设备上完成全部部署。
 
-验收与限制见[测试说明](docs/lenovo-validation.zh-CN.md)。**Lenovo 吞吐率上限尚未测定**；5 MiB/s 步进负载/温度测试已留到下次。Pi 的测试结果不能当作 Lenovo 极限。当前部分 UI 文案仍称 “Pi”，在此分支指 Lenovo 录制器。
-
-LoRa 安装器包含 pySerial 3.5，见[第三方说明](THIRD_PARTY_NOTICES.md)。
+账号和配对口令由维护者私下提供。见[第三方说明](THIRD_PARTY_NOTICES.md)。
