@@ -14,7 +14,7 @@ Download and install on the **operator laptop**:
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/recorder-lora-remote/releases/latest/download/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/latest/download/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -78,7 +78,7 @@ After recording finishes, the remote automatically refreshes the list once. When
 
 Share the pairing passcode privately. Do not publish decrypted `remote.json` files or private pre-paired installers. Encrypting a pairing file does not encrypt the radio messages. Range must be tested at the actual location.
 
-The installer includes pySerial 3.5; see [Third-party notices](https://github.com/FCosx/recorder-lora-remote/blob/main/THIRD_PARTY_NOTICES.md).
+The installer includes pySerial 3.5; see [Third-party notices](https://github.com/FCosx/robot-recorder/blob/main/THIRD_PARTY_NOTICES.md).
 
 ## Status update interval
 

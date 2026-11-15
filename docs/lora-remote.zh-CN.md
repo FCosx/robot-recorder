@@ -12,7 +12,7 @@
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/recorder-lora-remote/releases/latest/download/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/latest/download/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -74,7 +74,7 @@ python3 -B ~/robot-recorder/tools/lora_recorder.py remote-stop
 
 配对口令需私下交付；不要公开解密后的 `remote.json` 或私有预配对安装包。配对文件加密不等于无线数据加密。远距离效果需实测。
 
-安装包含 pySerial 3.5，许可见 [第三方说明](https://github.com/FCosx/recorder-lora-remote/blob/main/THIRD_PARTY_NOTICES.md)。
+安装包含 pySerial 3.5，许可见 [第三方说明](https://github.com/FCosx/robot-recorder/blob/main/THIRD_PARTY_NOTICES.md)。
 
 ## 状态更新间隔
 

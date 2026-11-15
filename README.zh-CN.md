@@ -1,5 +1,7 @@
 # 机器人数据记录器
 
+> **最新版本：** 请按 [Lenovo 录制器分支](https://github.com/FCosx/robot-recorder/tree/lenovo-recorder)及其 [beta 预发布](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1)使用最新功能和安装说明。当前 `main` 分支保留稳定 Raspberry Pi 版本。
+
 [English](README.md) | **简体中文**
 
 用于机器人实验的 ROS 2 数据记录器。机器人通过以太网和 Zenoh 将话题传到树莓派；用户在局域网浏览器中选择话题并控制录制，MCAP 文件保存在树莓派。
@@ -43,7 +45,7 @@ LoRa 控制端可离线安装，使用时无需树莓派 IP 或现场网络。Gi
 
 ## 仓库内容
 
-本仓库提供说明书、机器人桥安装工具，以及可选 LoRa 客户端源码和 [安装器](https://github.com/FCosx/recorder-lora-remote/releases/latest)。树莓派录制服务由维护者单独准备。支持标准 ROS 消息类型，自定义类型暂不在支持范围。公开配对文件已加密，树莓派密码及解密后的配对文件不公开。
+本仓库提供说明书、机器人桥安装工具，以及可选 LoRa 客户端源码和 [安装器](https://github.com/FCosx/robot-recorder/releases/latest)。树莓派录制服务由维护者单独准备。支持标准 ROS 消息类型，自定义类型暂不在支持范围。公开配对文件已加密，树莓派密码及解密后的配对文件不公开。
 
 机器人桥同时启动轻量带宽助手。刷新任一 UI 会在机器人端短暂采样；开始录制前必须关闭临时订阅。旧机器人可在记录器空闲时重跑手册安装命令，更新助手和自动启动设置。
 

@@ -1,5 +1,7 @@
 # Robot Recorder
 
+> **Most up-to-date version:** Follow the [Lenovo recorder branch](https://github.com/FCosx/robot-recorder/tree/lenovo-recorder) and its [beta prerelease](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1) for current features and setup instructions. This `main` branch retains the stable Raspberry Pi version.
+
 **English** | [简体中文](README.zh-CN.md)
 
 A ROS 2 data recorder for robot experiments. Robots send topics to a Raspberry Pi over Ethernet and Zenoh. Users select topics and control recording through a browser on the local network; MCAP files are saved on the Pi.
@@ -43,7 +45,7 @@ The LoRa laptop can be installed offline and operated without the Pi's IP or acc
 
 ## Repository contents
 
-This repository currently provides the recorder manuals and the optional LoRa client's source and [installer](https://github.com/FCosx/recorder-lora-remote/releases/latest). The maintainer prepares the Pi recording service separately. Standard ROS message types are supported; custom types remain outside scope. Pairing authorization in the public installer is encrypted; Pi login passwords and decrypted pairing files are kept private.
+This repository currently provides the recorder manuals and the optional LoRa client's source and [installer](https://github.com/FCosx/robot-recorder/releases/latest). The maintainer prepares the Pi recording service separately. Standard ROS message types are supported; custom types remain outside scope. Pairing authorization in the public installer is encrypted; Pi login passwords and decrypted pairing files are kept private.
 
 The robot bridge launcher also starts a small rate helper. Refreshing either UI takes one short robot-local snapshot; recording waits for temporary readers to close. Existing robots receive the helper and automatic startup by rerunning the manual's setup command while the recorder is idle.
 
