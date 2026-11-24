@@ -1,10 +1,10 @@
 # Robot Recorder
 
-> **Most up-to-date version:** Follow the [Lenovo recorder branch](https://github.com/FCosx/robot-recorder/tree/lenovo-recorder) and its [beta prerelease](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1) for current features and setup instructions. This `main` branch retains the stable Raspberry Pi version.
-
 **English** | [简体中文](README.zh-CN.md)
 
 A ROS 2 data recorder for robot experiments. Robots send topics to a Raspberry Pi over Ethernet and Zenoh. Users select topics and control recording through a browser on the local network; MCAP files are saved on the Pi.
+
+**Raspberry Pi is the primary recorder platform.** Start with this `main` branch and its Pi user manual below. The [Lenovo branch](https://github.com/FCosx/robot-recorder/tree/lenovo-recorder) preserves the alternative Lenovo/NVMe setup and its historical beta; its x86_64 recorder executable is not a Pi executable. Released installers are versioned separately from the maintained device software.
 
 ## Main features
 

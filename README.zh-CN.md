@@ -1,10 +1,10 @@
 # 机器人数据记录器
 
-> **最新版本：** 请按 [Lenovo 录制器分支](https://github.com/FCosx/robot-recorder/tree/lenovo-recorder)及其 [beta 预发布](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1)使用最新功能和安装说明。当前 `main` 分支保留稳定 Raspberry Pi 版本。
-
 [English](README.md) | **简体中文**
 
 用于机器人实验的 ROS 2 数据记录器。机器人通过以太网和 Zenoh 将话题传到树莓派；用户在局域网浏览器中选择话题并控制录制，MCAP 文件保存在树莓派。
+
+**树莓派是项目的主录制平台。** 请从当前 `main` 分支及下方 Pi 使用手册开始。[Lenovo 分支](https://github.com/FCosx/robot-recorder/tree/lenovo-recorder)保留 Lenovo/NVMe 备选方案及其历史 beta；其中的 x86_64 录制器可执行文件不能用于 Pi。已发布安装器与维护中的实机软件分别管理版本。
 
 ## 主要功能
 
