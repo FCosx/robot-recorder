@@ -14,7 +14,7 @@ Download and install on the **operator laptop**:
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/robot-recorder/releases/latest/download/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/download/v0.15.0/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -102,7 +102,7 @@ Run only one client at a time. No re-pairing or Pi restart is needed. This optio
 
 ## Optional cloud upload
 
-After the maintainer configures cloud access, use the controls beside **Refresh recordings** in **Recordings on the Pi**:
+After the maintainer configures cloud access, use the controls beside **Refresh recordings** in **Recordings on the recorder**:
 
 - **Manual upload** is the initial mode. Choose **Upload to cloud** on each completed recording you want to upload.
 - Switch to **Automatic upload** and confirm to upload completed recordings when the Pi is idle, including older local recordings.

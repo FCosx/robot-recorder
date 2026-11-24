@@ -46,7 +46,7 @@ class Counter:
 
     def ensure_at_least(self, value):
         if type(value) is not int or not 0 <= value < 2**63 - 1:
-            raise ValueError("Invalid Pi command high-water mark")
+            raise ValueError("Invalid recorder command high-water mark")
         with self.db:
             self.db.execute("UPDATE counter SET value=MAX(value, ?) WHERE id=1", (value,))
 
@@ -174,7 +174,7 @@ class Remote:
                 size, duration = split_limits(size, duration)
                 if size or duration:
                     if not status["splitting_supported"]:
-                        raise ValueError("Update the Pi LoRa agent before using file splitting")
+                        raise ValueError("Update the recorder LoRa agent before using file splitting")
                     data += SPLIT_LIMITS.pack(size, duration)
             self.bandwidth_enabled = False
             self.bandwidth_transfer = None
@@ -202,7 +202,7 @@ class Remote:
                 or self.pending or self.data_transfer is not None or self.topic_transfer is not None):
             raise ValueError("Wait for fresh radio status and the current request to finish")
         if not status["recording_management"]:
-            raise ValueError("Update the Pi LoRa agent before using recording management")
+            raise ValueError("Update the recorder LoRa agent before using recording management")
 
     def next_bandwidth_request(self):
         # A refresh creates one job. Status polls cannot trigger new sampling.
@@ -592,7 +592,7 @@ class Remote:
                     if response is not None and op == Op.SYNC:
                         try:
                             if response.result != Result.OK:
-                                raise ValueError("Pi rejected radio synchronization")
+                                raise ValueError("Recorder rejected radio synchronization")
                             nonce, highest = SYNC_RESPONSE.unpack(response.data)
                             if nonce != data:
                                 raise ValueError("Radio synchronization challenge does not match")

@@ -10,7 +10,9 @@ Only the **robot publishing ROS topics** needs the bridge setup below. A compute
 
 ### 1. Connect the bundle
 
-Power on the router, switch and Pi. Connect the router's **LAN** port, Pi and robot to the same switch. Connect the operator laptop too, if used. Keep the prepared SSD connected. Wait for the Pi to boot; if it stays at a red power LED, press its power button once.
+Power on the router, switch and Pi. Connect the router's **LAN** port, Pi and robot to the same switch. Keep the prepared SSD connected. Wait for the Pi to boot; if it stays at a red power LED, press its power button once.
+
+An operator laptop can connect to the switch or use Wi-Fi that can reach the Pi. It can also use **NoMachine** to access the robot's desktop, as described in step 4; in that case, the laptop only needs a network connection to the robot.
 
 The supplied router reserves **`192.168.1.182`** for the Pi's Ethernet port. With this bundle, no address discovery or Pi login is normally needed. The robot's Ethernet should use automatic addressing (DHCP). Its existing Wi-Fi may stay connected. If the robot must retain a different fixed Ethernet address, use the troubleshooting section before changing it.
 
@@ -39,11 +41,21 @@ The bridge starts automatically at boot, waits for Ethernet and reconnects when 
 
 ### 4. Open the recorder
 
-On the robot, open **Robot Recorder** from the application menu. Alternatively, on any computer connected to the switch, open:
+On the robot, open **Robot Recorder** from the application menu. Alternatively, on any computer that can reach the Pi over Ethernet or Wi-Fi, open:
 
 **http://192.168.1.182:8080**
 
 Under **Available topics**, **Robot ROS domain** shows the saved domain that the source bridge listens to. The Pi's receiving domain stays fixed at **1** and has no user selection. Include `http://` and `:8080`. The optional **http://robot-recorder.local:8080** depends on local-name support and may select Wi-Fi; prefer the bundle's wired address. A browser-only computer can bookmark that address and needs no installation.
+
+#### Access through NoMachine (optional)
+
+This lets you control a moving robot's recorder without connecting the operator laptop to the switch by cable.
+
+1. With NoMachine installed on the **robot and operator laptop**, connect from the laptop to the **robot's desktop**, using the robot's reachable network address and login. Wi-Fi is suitable if it can reach the robot. Ask the maintainer for access details; see the [NoMachine setup guide](https://www.nomachine.com/support/documents/getting-started-with-nomachine) if needed.
+2. Inside that remote desktop, use the **robot's browser** to open **http://192.168.1.182:8080**, or open **Robot Recorder** from its application menu. Keep the robot and Pi connected to the onboard switch.
+3. Select topics and record as usual. Closing the NoMachine session does not stop a recording already running on the Pi.
+
+**Download saves to the robot computer** when its browser is used through NoMachine, normally in that browser's download folder. To preview or download on your own device instead, upload the completed recording to the cloud, then open the cloud website in **your device's own browser**, as described below.
 
 ## Everyday recording
 
@@ -53,7 +65,7 @@ After the one-time setup, power on the bundle and robot, start the robot's publi
 2. Click **Refresh topics**, then select the topics to save. Under **Split MCAP files**, optionally enter a size in MiB, a duration in seconds, or both. Leave both blank for one file; the first limit reached starts a new segment.
 3. Click **Begin recording**. The timer starts when the recorder subscribes to the first selected topic. Completed bag duration measures the first-to-last recorded message interval, so it may differ slightly.
 4. Click **Stop recording** and wait for finalization. The size may still increase while buffered messages are saved. Keep the Pi powered until it finishes.
-5. In **Recordings on the Pi**, use **View topics** for size, duration, total/per-topic counts and average Hz. All MCAP segments belong to the same recording. **Download** saves a TAR copy to the computer running the browser. **Delete** permanently removes that recording from the Pi.
+5. In **Recordings on the recorder**, use **View topics** for size, duration, total/per-topic counts and average Hz. All MCAP segments belong to the same recording. **Download** saves a TAR copy to the computer running the browser—the robot when accessed through NoMachine. **Delete** permanently removes that recording from the Pi.
 
 The local list shows 10 recordings per page. Available topics have an internal scrollbar. Opening the page or clicking **Refresh topics** requests one robot-local bandwidth snapshot of about one second. **—** means no usable estimate, not zero; selected topics show a combined estimate. Temporary subscribers save no sensor data and must close before recording starts. Estimates do not guarantee that every message will be recorded.
 
@@ -79,7 +91,7 @@ Follow the [LoRa Remote Guide](lora-remote.md) for distant topic selection, Star
 
 ## Optional cloud upload
 
-After the maintainer configures cloud access, use the controls beside **Refresh recordings** in **Recordings on the Pi**:
+After the maintainer configures cloud access, use the controls beside **Refresh recordings** in **Recordings on the recorder**:
 
 - **Manual upload** is the initial mode. Choose **Upload to cloud** on each completed recording you want to upload.
 - Switch to **Automatic upload** and confirm to upload completed recordings when the Pi is idle, including older local recordings.
@@ -88,7 +100,7 @@ After the maintainer configures cloud access, use the controls beside **Refresh 
 - MCAP files are losslessly compressed using indexed Zstandard chunks before upload. Recording takes priority: compression and transfer pause before capture starts and can resume afterward.
 - **Uploaded to cloud** appears after all files pass read-back verification. Originals stay on the Pi until you choose **Delete**. Compression needs temporary free space.
 
-The Pi uploads through its own internet connection; LoRa carries only commands and status. Use the cloud website below to access completed uploads. For ROS playback, keep `metadata.yaml` and all referenced `.mcap` segments in the same recording folder.
+The Pi uploads directly through its own internet connection; you do not need to download a copy to the robot first. LoRa carries only commands and status. After **Uploaded to cloud** appears, use the cloud website below to preview or download the recording from another device. For ROS playback, keep `metadata.yaml` and all referenced `.mcap` segments in the same recording folder.
 
 ## Cloud website
 
@@ -98,38 +110,43 @@ Open **https://154.8.234.96** on any computer with internet access. It does not 
 
 1. Ask the project maintainer for your **individual cloud account**. Login details are supplied privately; there is no public registration or default login in this guide.
 2. Open the website and choose **Sign in**. If prompted, set your own password of at least 12 characters, then sign in again.
-3. A researcher sees only the recorders assigned to their account. This website account is separate from the Pi, router and cloud-provider accounts. Contact the maintainer for account access or a password reset.
+3. Ordinary accounts can access the current recorder. This website account is separate from the recorder, router and cloud-provider accounts. Contact the maintainer for a new account or password reset.
 
 ### Browse and download
 
 - In **Recording library**, search by recording or recorder name. Each entry shows its start time, compressed size, duration and message count.
 - **View topics** shows topic names, recorded counts, average Hz and ROS types.
-- **Download bag** saves the complete TAR archive to the computer running the browser. Extract it and keep `metadata.yaml` and every referenced `.mcap` segment together. Individual files are also available under **View topics → Individual files**.
-- **Preview data** provides basic single-topic image, numeric-plot and XY point-cloud views at a chosen position. Decoding runs in your browser. If a preview cannot load, download the bag for local analysis.
-- Deleting a recording on the Pi affects the Pi copy. An uploaded cloud copy remains available; ask the maintainer about cloud retention or deletion. Sign out when finished on a shared computer.
+- **Download bag** saves the complete TAR archive to the device running the browser. Open the cloud website in your own device's browser to save it there; using the robot's browser through NoMachine still saves it on the robot. Extract it and keep `metadata.yaml` and every referenced `.mcap` segment together. Individual files are also available under **View topics → Individual files**.
+- **Preview data** opens **Single topic** or **Synchronized** (up to four topics). Choose topics and **Image resolution**: **Fast** (up to 480×270) or **HD** (up to 1280×720), preserving aspect ratio and never enlarging smaller images.
+- Click **Start preview**. It prepares data, then plays across the recording; **Pause/Resume** controls playback. Drag the shared timeline to inspect a position; synchronized panels update together. **Stop loading** cancels preparation; **Retry preview** retries an interrupted read.
+- Preview images/point clouds are sampled copies. HD is a size cap, not guaranteed original resolution. Originals and downloads are unchanged. A first uncached preparation or long recording may take longer or buffer; the server prepares bounded preview copies and the browser renders them. Cached indexes are reused; an unsupported topic falls back independently to original-file reads. Standard LaserScan is supported, but a dedicated 2D scan display remains future work.
+- Depth images use distance colours; black indicates no return. PointCloud2 previews support interactive **3D** rotation, wheel zoom, **Reset view** and **Fit** in both preview modes. A browser without 3D support falls back to XY. These are sampled previews; source files stay unchanged.
+- Deleting a local recording affects only its local copy. Administrators manage cloud copies separately: **Delete** moves to **Trash**, **Restore** recovers it, and confirmed **Delete permanently** frees its storage. Trash still uses space. Automatic deletion remains off; no independent bag backup is promised. Sign out on shared computers.
 
 ### For project administrators
 
-In **Users**, choose **Researcher**, assign the required recorder(s), then **Create account**. Share the generated temporary password privately; the user changes it at first sign-in. Use **Recorder access** to adjust permissions, **Reset password** to recover access, or **Disable** to withdraw access. Ordinary cloud users need no server or cloud-provider login.
+In **Users**, enter a username and choose **Create account**. Share its generated temporary password privately; the user chooses a new password at first sign-in. There are no role or recorder-access selectors for this single-recorder setup.
+
+For other accounts, **Reset password** issues a new temporary password; **Delete account** removes access and sessions while keeping recordings. The sole administrator cannot be deleted or randomly reset. To change the administrator's password, use **Change password**, enter the current password and your chosen new password twice (at least 12 characters). Enable/Disable controls are not provided. Ordinary users need no server or cloud-provider login.
 
 ### Common problems
 
 - **Website will not open:** check the internet connection and the full `https://` address, then contact the maintainer if it remains unavailable. No special networking client is required for this cloud website.
 - **Sign-in fails:** ask the maintainer to check the account or reset its password.
-- **A recording is missing:** confirm **Uploaded to cloud** on the Pi/LoRa page, refresh the cloud library, and ask the maintainer to check your recorder permissions. An unfinished upload is not listed as complete.
+- **A recording is missing:** confirm **Uploaded to cloud** on the Pi/LoRa page, refresh the cloud library, and ask the maintainer to check your account. An unfinished upload is not listed as complete.
 
 ## Troubleshooting
 
 ### Cannot reach the Pi
 
-On the **computer that cannot connect**, check:
+On the **computer running the recorder's browser**, check; when using NoMachine, run these commands in the **robot's terminal**:
 
 ```bash
 ip -4 route get 192.168.1.182
 curl -q --noproxy '*' -fsS --connect-timeout 3 --max-time 6   http://192.168.1.182:8080/api/status
 ```
 
-The route should use the Ethernet interface connected to the switch, and the request should return status JSON. If it uses Wi-Fi, check the Ethernet cable and address. If the direct request works but the browser shows **502**, bypass the proxy for the Pi's IP and, if used, `robot-recorder.local`. Check Pi power and the SSD if the recorder service is unavailable. The local UI has no login; keep it on a trusted local network.
+The request should return status JSON. On the **robot**, the bridge needs a direct Ethernet route to the Pi; check its cable and address if the route uses Wi-Fi. A browser-only laptop may use reachable Wi-Fi, or use NoMachine if only the robot can reach the Pi. If the direct request works but the browser shows **502**, bypass the proxy for the Pi's IP and, if used, `robot-recorder.local`. Check Pi power and the SSD if the recorder service is unavailable. The local UI has no login; keep it on a trusted local network.
 
 ### Find the Pi's wired address
 

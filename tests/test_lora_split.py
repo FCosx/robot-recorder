@@ -63,7 +63,7 @@ class SplitRadioTests(unittest.TestCase):
         self.assertFalse(self.api.calls)
     def test_old_agent_capability_refuses_splitting_but_accepts_off(self):
         r=self.remote();r.latest=replace(r.latest,flags=r.latest.flags & ~32)
-        with self.assertRaisesRegex(ValueError,'Update the Pi'):r.submit(Op.START_SELECTED,[0],r.catalog_revision.hex(),5,0)
+        with self.assertRaisesRegex(ValueError,'Update the recorder'):r.submit(Op.START_SELECTED,[0],r.catalog_revision.hex(),5,0)
         self.assertIsNone(r.pending)
         r.submit(Op.START_SELECTED,[0],r.catalog_revision.hex())
         self.assertEqual(len(r.queue.get_nowait()[2]),21)

@@ -9,10 +9,13 @@ A ROS 2 data recorder for robot experiments. Robots send topics to a Raspberry P
 ## Main features
 
 - Discover and select ROS 2 topics to record; set the robot bridge ROS domain from either UI, saved across reboots.
+- Estimate topic bandwidth on refresh; measurement subscribers close before recording starts.
 - Start and stop recording; split MCAP files by size or duration.
 - Inspect recording size, duration, topic message counts and average Hz; download or delete recordings.
 - Monitor recording status, free space, CPU temperature and brief warnings.
 - Optional HTTPS/S3 cloud uploads: indexed MCAP Zstandard compression, manual/idle automatic modes and verified-upload badges; recording takes priority.
+- Cloud login, downloads, single/four-topic synchronized playback, Fast/HD images, depth colouring and interactive 3D point clouds.
+- Access the robot's browser through NoMachine when an operator laptop cannot stay wired to the switch.
 
 ## First-time setup
 
@@ -27,13 +30,15 @@ The Pi must already be configured by the maintainer; the robot needs ROS 2 Humbl
 
 ## Everyday use
 
-Power on the bundle and robot, start the robot's publishers, then open **http://192.168.1.182:8080** on a computer connected to the switch. The robot bridge starts automatically and reconnects when the Pi is available; no terminal needs to stay open. A browser-only computer needs no ROS or bridge installation.
+Power on the bundle and robot, start the robot's publishers, then open **http://192.168.1.182:8080** in a browser that can reach the Pi over Ethernet or Wi-Fi. Alternatively, connect to the robot's desktop through NoMachine and use its browser. The robot bridge starts automatically and reconnects when the Pi is available; no terminal needs to stay open. A browser-only computer needs no ROS or bridge installation.
+
+Downloads go to the computer running the browser: using the robot's browser through NoMachine saves to the robot. To preview or download on your own device, upload from the Pi to the cloud and open the cloud in that device's own browser.
 
 Check **Robot ROS domain** against the robot publishers, then select topics and begin recording. Changes can be applied while idle and are saved on the robot. The Pi receiver stays on domain 1. After stopping, wait for finalization before inspecting the result. If the bundle address changes or a robot has a fixed Ethernet address on a different subnet, follow the manual's troubleshooting section. Local-name access is an optional shortcut.
 
 ## Optional cloud access
 
-The cloud website is **https://154.8.234.96**. Upload completed recordings from the Pi, then use any internet-connected computer to sign in, browse and download cloud copies. Local recording works independently of the cloud.
+The cloud website is **https://154.8.234.96**. Upload completed recordings directly from the Pi, then use any internet-connected computer to sign in, preview and download cloud copies. Single-topic and synchronized views share a draggable full-recording timeline. Fast/HD previews are sampled copies; original downloads stay unchanged. Administrators can move cloud recordings to Trash, restore them or permanently delete them. Automatic deletion stays off. Local recording works independently of the cloud.
 
 Ask the project maintainer for your individual account; login details are shared privately. Follow the [cloud website guide](docs/user-manual.md#cloud-website) ([中文](docs/user-manual.zh-CN.md#云端网页)).
 
@@ -45,8 +50,14 @@ The LoRa laptop can be installed offline and operated without the Pi's IP or acc
 
 ## Repository contents
 
-This repository currently provides the recorder manuals and the optional LoRa client's source and [installer](https://github.com/FCosx/robot-recorder/releases/latest). The maintainer prepares the Pi recording service separately. Standard ROS message types are supported; custom types remain outside scope. Pairing authorization in the public installer is encrypted; Pi login passwords and decrypted pairing files are kept private.
+The [Pi release v0.15.0](https://github.com/FCosx/robot-recorder/releases/tag/v0.15.0) includes the matching LoRa installer, verified v2 ARM64/x86_64 bridge packages, manifest and checksums. The compiled **Pi ARM64** recorder is a maintenance update for an already prepared Ubuntu 24.04/Jazzy recorder; see [executable notes](docs/recorder-executable.md). It does not provision a blank Pi. Operators do not build anything.
+
+Public contents include guides, robot bridge/setup tools, LoRa source and encrypted pairing authorization. Private recorder/cloud backend source, login credentials, decrypted pairing, databases, raw recordings and private build archives remain excluded. Standard ROS message types are supported; custom types remain outside scope.
 
 The robot bridge launcher also starts a small rate helper. Refreshing either UI takes one short robot-local snapshot; recording waits for temporary readers to close. Existing robots receive the helper and automatic startup by rerunning the manual's setup command while the recorder is idle.
 
 The LoRa installer includes pySerial 3.5; see [Third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Validation and remaining work
+
+See [Pi validation and remaining checks](docs/pi-validation.md) ([中文](docs/pi-validation.zh-CN.md)). The replacement Pi passed small LAN/LoRa captures, split-boundary integrity and real reboot checks. Its new sustained throughput, SSD stability and cooler performance still need a focused hardware run; historical results are not a fresh benchmark of this board.

@@ -12,7 +12,7 @@
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/robot-recorder/releases/latest/download/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/download/v0.15.0/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -100,7 +100,7 @@ python3 -B ~/robot-recorder/tools/lora_recorder.py open
 
 ## 云端上传（可选）
 
-维护者配置好云端连接后，在 **Recordings on the Pi** 区域、**Refresh recordings** 旁操作：
+维护者配置好云端连接后，在 **Recordings on the recorder** 区域、**Refresh recordings** 旁操作：
 
 - 初始为 **Manual upload（手动上传）**：在需要上传的录制条目上点击 **Upload to cloud**。
 - 切换到 **Automatic upload（自动上传）** 并确认后，树莓派空闲时自动上传已完成的录制，也包括以前保存的录制。
