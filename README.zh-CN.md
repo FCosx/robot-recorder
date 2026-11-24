@@ -1,8 +1,8 @@
-# Robot Recorder — Lenovo 测试版
+# Robot Recorder — Lenovo 备选版本
 
 [English](README.md) | **简体中文**
 
-当前 beta 使用**已配置好的 Lenovo：Ubuntu 24.04 / ROS 2 Jazzy，内部 NVMe 存储**。机器人通过以太网/Zenoh 传输标准 ROS 话题，用户在浏览器选择并录制。本地录制为主要功能，LoRa 控制与云端为可选增强。
+此分支保留**已配置好的 Lenovo：Ubuntu 24.04 / ROS 2 Jazzy，内部 NVMe 存储**备选方案。机器人通过以太网/Zenoh 传输标准 ROS 话题，用户在浏览器选择并录制。本地录制为主要功能，LoRa 控制与云端为可选增强。**树莓派是主平台；Pi 使用者请从 [main](https://github.com/FCosx/robot-recorder/tree/main) 开始。**
 
 **已验证演示速率：110 MiB/s 连续 3 分钟（180 秒），测试配置下无消息缺失。** 见[验收与限制](docs/lenovo-validation.zh-CN.md)。
 
@@ -22,6 +22,6 @@
 
 [Lenovo beta v0.14.0-beta.1](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1)包含匹配的 LoRa 安装器、经过校验的 x86_64/ARM64 v2 桥包及校验和。另附已验收的 Lenovo Linux 可执行程序，供维护者更新已配置记录器，见[可执行程序说明](docs/recorder-executable.zh-CN.md)。普通用户无需编译。
 
-此分支是项目当前最新版本；[main](https://github.com/FCosx/robot-recorder/tree/main)保留稳定 Pi 版本，本 beta 不替换其发布。公开内容包括安装工具、LoRa 客户端源码、手册、加密配对文件和 Lenovo 编译产物；不公开录制/云后端源码、登录凭据、解密配对、数据库或原始录制。克隆仓库或解压可执行包不能在空白设备上完成全部部署。
+此分支将 Lenovo 专用手册及历史 beta 与 [main](https://github.com/FCosx/robot-recorder/tree/main) 上的 Pi 主平台分开保留，不表示该快照包含之后的全部通用更新。公开内容包括安装工具、LoRa 客户端源码、手册、加密配对文件和 Lenovo 编译产物；不公开录制/云后端源码、登录凭据、解密配对、数据库或原始录制。克隆仓库或解压可执行包不能在空白设备上完成全部部署。
 
 账号和配对口令由维护者私下提供。见[第三方说明](THIRD_PARTY_NOTICES.md)。

@@ -1,8 +1,8 @@
-# Robot Recorder — Lenovo beta
+# Robot Recorder — Lenovo alternative
 
 **English** | [简体中文](README.zh-CN.md)
 
-The current beta uses a **prepared Lenovo running Ubuntu 24.04 / ROS 2 Jazzy with internal NVMe storage**. Robots send standard ROS topics over Ethernet/Zenoh; users select and record them from a browser. Local recording is the main function; LoRa control and cloud access are optional.
+This branch preserves the alternative **prepared Lenovo running Ubuntu 24.04 / ROS 2 Jazzy with internal NVMe storage** setup. Robots send standard ROS topics over Ethernet/Zenoh; users select and record them from a browser. Local recording is the main function; LoRa control and cloud access are optional. **Raspberry Pi is the primary platform; start with [main](https://github.com/FCosx/robot-recorder/tree/main) for the Pi setup.**
 
 **Demonstrated recording rate: 110 MiB/s for 3 minutes (180 seconds), with no missing messages in the tested configuration.** See [validation and limits](docs/lenovo-validation.md).
 
@@ -22,6 +22,6 @@ Start with the [Recorder User Manual](docs/user-manual.md) ([中文](docs/user-m
 
 Use [Lenovo beta v0.14.0-beta.1](https://github.com/FCosx/robot-recorder/releases/tag/lenovo-v0.14.0-beta.1) for the matching LoRa installer, verified x86_64/ARM64 v2 bridge packages and checksums. The tested Lenovo Linux executable is included as a **maintainer update for the prepared recorder**; see [executable notes](docs/recorder-executable.md). Operators do not build anything.
 
-This branch is the most up-to-date project version. [main](https://github.com/FCosx/robot-recorder/tree/main) retains the stable Pi version; the beta does not replace its release. Public content includes setup tools, LoRa client source, guides, encrypted pairing authorization and the compiled Lenovo asset. Private recorder/cloud backend source, login credentials, decrypted pairing, databases and raw recordings are excluded. Cloning this repository or unpacking the executable does not provision a blank recorder.
+This branch keeps the Lenovo-specific guides and historical beta separate from the primary Pi platform on [main](https://github.com/FCosx/robot-recorder/tree/main). It is not a claim that this snapshot contains every later shared update. Public content includes setup tools, LoRa client source, guides, encrypted pairing authorization and the compiled Lenovo asset. Private recorder/cloud backend source, login credentials, decrypted pairing, databases and raw recordings are excluded. Cloning this repository or unpacking the executable does not provision a blank recorder.
 
 Accounts and the pairing passcode are supplied privately by the maintainer. See [third-party notices](THIRD_PARTY_NOTICES.md).
