@@ -1,39 +1,46 @@
-# Pi validation and remaining checks — 2026-11-24
+# Pi validation and remaining checks — 2026-11-26
 
 **English** | [简体中文](pi-validation.zh-CN.md)
 
-Primary recorder: replacement Raspberry Pi 5 Model B Rev 1.1 / 8 GB, Ubuntu 24.04.5 / ROS 2 Jazzy, native ARM64 recorder, ext4 SSD and 1-Gbit Ethernet. The prepared bundle retains its Pi address and stored recordings. The receiving DDS domain is fixed at 1; the robot's source domain is a separate persistent UI setting. Standard ROS messages are the supported scope.
+Primary recorder: Raspberry Pi 5 Model B Rev 1.1 / 8 GB, Ubuntu 24.04.5 / ROS 2 Jazzy, active cooler, native ARM64 recorder, Kingston A400 480 GB ext4 SSD over USB 3/UAS and 1-Gbit Ethernet. Lenovo is the robot/source; an operator laptop only opens the UIs and performs maintenance. The Pi receives on domain **1**; the robot source domain is independently selected and saved. Standard ROS messages are supported.
 
 ## Completed acceptance
 
-| Check | Evidence |
+The following checks ran on 24–25 November; release packaging on 26 November did not repeat the long load tests.
+
+| Check | Result |
 | --- | --- |
-| Native delivery | Build `20261124.pi1-9f079e13df30`; 15 compiled modules and ROS/dependency checks pass under the recorder account |
-| LAN capture | 58 messages across 3 MCAP files in a bounded 4-KiB/intended 10-Hz test |
-| LoRa capture | Selected-topic Start/Stop/details; 110 messages across 6 MCAP files |
-| Integrity | All 168 messages passed source payload/time/hash and MCAP CRC checks; zero internal sequence gaps, duplicates or decreases; 7 contiguous split edges |
-| Recording priority | In one LAN check, temporary-reader STOP confirmation took about 0.0156 s; no measurement/compression/upload activity during capture |
-| Startup | Real reboot restores SSD mount, native recorder, receiving bridge and LoRa agent; source test bridge, cloud and radio reconnect |
-| Preserved data | Seven moved bags / 48 files checked for exact SHA256 and integer nanosecond modification times; earlier SSD bags retained |
-| User-facing state | Recording details and migrated Uploaded badges display correctly; current cloud connection is available in Manual mode |
+| Native delivery | Current build `20261125.cloudmode1-7b90257d62ed`; all 15 compiled modules and ROS/dependency checks pass. Matching LAN/LoRa resources were deployed. |
+| Sustained 110 MiB/s | Lenovo → Pi, 512 KiB × 220 Hz, 180-second measurement window: **39,600 / 39,600** source messages saved; peak CPU **68.3°C**; seven MCAP files and six continuous split boundaries. |
+| Sustained 80 MiB/s | Same path, 160 Hz, 300 seconds: **48,000 / 48,000** saved; peak CPU **67.75°C**; eleven MCAP files and ten continuous boundaries. |
+| Storage and integrity | No new USB disconnect/reset, UAS, I/O, ext4 or power errors in those runs. Payload hashes, source sequence/time references and MCAP CRC checks pass; no duplicates or bad payloads. |
+| Real sensor recording | D435i RGB, depth, organized coloured point cloud, camera calibration and static transforms: **15.016 s**, **1,126 messages**; 225 per main stream, about 14.99 Hz. Message layouts, CRCs and matched source header timestamps pass. Compressed upload passed full checksum verification; three preview indexes were verified. |
+| Cloud workflow | Small real-device compression/upload Stop via LAN and LoRa, multipart resume, full download integrity, isolated idle Automatic and recording priority pass. An active upload worker stops before capture; it can continue afterward. |
+| Both UIs and domains | LAN/LoRa selected-topic recording, size/time splitting, details and source-domain changes pass; Pi domain remains 1. Existing pairing and increasing command counters are preserved. |
+| Startup | Pi reboot restores SSD and native services. After the persistent-buffer fix, an actual Lenovo reboot automatically reconnects **before SSH sign-in**; receive limit remains 8 MiB, unit enabled/active, no service restart increments, post-boot capture **40 / 40** messages. |
+| Connection status | Unique helper node names remove the reproduced false-disconnection case. Real source-bridge interruption still produces a warning; recovery and domain changes pass. |
+| Cloud mode fix | Both UIs can return to Manual with unknown/unreachable cloud status, including during capture. Enabling Automatic and new uploads still require cloud reachability; recording priority and Stop remain enforced. |
 
-These are small functional checks. Sequence comparisons cover only the first-to-last recorded source endpoints and are not proof of source data before or after them. Existing historical throughput results are separate; this release does not claim a new sustained-rate or thermal result for the replacement board.
+These are bounded measurements of specific configurations, not an absolute throughput ceiling or indefinite loss-free guarantee. Including warmup/tail, the sustained runs saved 41,361/41,361 and 49,281/49,281 messages. At 110 MiB/s the near-network-capacity risk warning correctly remains even though the independent source comparison found no loss. The earlier operator-laptop-source run lost 84/39,600 messages; the source computer/profile/path/domain also changed, so the newer result does not isolate cooling or one hardware component as the cause.
 
-The shared bridge retains the listener-lifetime duplication correction and v2 live Image/CompressedImage history handling. Source setup provisions bounded DDS receive buffers while preserving custom settings. The receiver also retains bandwidth-coordinator recovery, clean source-offline shutdown and concise UDP/network-loss risk indications. Starting capture still requires the robot to confirm temporary measurement subscribers have closed. Warnings do not prove complete publisher delivery or provide exact missing-source counts for arbitrary sensors.
+The RealSense source header timestamps align exactly in that driver configuration; this does not establish independent hardware-clock accuracy or completeness for arbitrary sensors. Invalid scene depth remains invalid in recordings. Real sensor data was retained; owned synthetic test bags were removed after their reference evidence was saved.
 
-The already deployed cloud supports compressed verified uploads, accounts, single/four-topic full-recording playback and seeking, Fast/HD, depth colour maps and interactive XYZ point clouds. Cloud originals/downloads stay unchanged. Storage display and administrator Trash/Restore/permanent deletion are available; automatic deletion stays off. Initial preview preparation or buffering can still take time, especially for large clouds or slow networks.
+The reboot test also observed early clock-skew warnings until the existing NTP service synchronized. The 40-message check ran afterward. No clock policy was changed, and time-sensitive recording during that unsynchronized interval is not validated.
 
-## Public release checks
+The bridge retains its listener-lifetime duplication fix and v2 image-history handling. Setup persists the DDS receive-buffer ceiling even if the runtime value is already sufficient, preserving higher managed limits. Temporary bandwidth readers must close and acknowledge before capture. Warnings detect reported loss or known pressure/interruption risks; absence of a warning is **not** proof of complete delivery for arbitrary publishers.
 
-For this release, 125 Python tests were discovered: 115 passed and 10 checks requiring the private backend were skipped. All four JavaScript test files passed. The actual public LoRa bundle passed first installation and update checks with isolated pairing/counter preservation; its embedded guides/runtime match the repository. Both bridge archives, manifests and architecture headers match their checksums; the x86_64 bridge also passed a real temporary installation/version check. The Pi ELF matches the already accepted ARM64 build. Public-source/asset exclusion checks, 38 local links/anchors and 38 shell examples passed. No radio, cloud object or production recorder was changed by these release checks.
+Cloud supports verified indexed-Zstandard uploads, individual accounts, downloads, single/four-topic full timelines and seeking, Fast/HD, depth colours and interactive 3D point clouds. Previews are sampled copies. Storage display and administrator Trash/Restore/permanent deletion are available; automatic deletion remains off. Preview preparation may still take time on a first read or slow network. No independent bag backup is promised.
 
-## Remaining validation, in order
+## Release checks
 
-1. **Replacement-Pi sustained recording:** a focused longer run around the previously demonstrated operating range, checking source counts, payloads, SSD/USB errors, CPU temperature and fan behaviour. This is still needed after changing boards/cooling.
-2. **Small end-to-end cloud check on this Pi:** compress/upload, stop/resume, full download integrity and starting recording during a queued transfer. Cloud features passed earlier-device tests; the migration itself checked connectivity and preserved upload state, not a new upload.
-3. **Fresh robot and field validation:** follow the released commands on an available Humble/Jazzy robot, verify domain changes/reboot recovery and representative sensors. Check NoMachine access and download destinations in the real operator workflow.
-4. **Long-distance LoRa:** measure command/status reliability and topic/list latency at the actual site. A one-mile range or one-second end-to-end refresh is not guaranteed by the selected polling interval.
+120 public Python tests passed; 10 tests requiring the private backend were skipped. All four JavaScript suites passed. Actual public LoRa first installation and update, encrypted-pairing identity, preserved local counters, embedded-guide/runtime agreement, both bridge archive hashes/architectures and temporary x86_64 bridge installation are checked. The Pi ELF matches the privately archived, deployed build. Public files and expanded archives are checked for private credentials, operational state and excluded backend source. These packaging checks do not run publishers or modify recordings/cloud objects.
 
-## Optional later development
+## Remaining validation
 
-Dedicated 2D LaserScan display, further preview-startup optimisation, bandwidth-estimate refinement for sparse/bursty topics and investigation of the observed robot LiDAR shutdown timeout. Automatic cloud-retention rules and deeper physical-device protection are separate design choices, not enabled features or release claims. A full blank-Pi installer is not supplied by this maintenance release.
+1. **Robot and field workflow:** fresh Humble/ARM64 installation and representative sensors; operator access over reachable Wi-Fi and NoMachine, including download destinations. The released first-time bridge commands have already passed on Lenovo/Jazzy x86_64; this does not replace Orin/Humble field acceptance.
+2. **Real-distance LoRa:** command/status reliability, reconnection and topic/catalog latency at the intended site. A large catalog can be slow at the current air rate. One-second polling is a wait after replies, not a one-second delivery or one-mile range guarantee.
+3. **Longer/fault-edge evidence:** arbitrary sensor completeness, startup before clock synchronization, abrupt power/cable failure and independently re-reading the low-space auto-stop bag remain outside the completed checks. No destructive full-disk or power-cut test was run.
+
+## Optional later work
+
+Dedicated 2D LaserScan display, faster initial preview preparation, estimates for sparse/bursty topics and the previously observed robot LiDAR shutdown timeout. Automatic cloud retention, independent backups, deeper physical-device protection and a blank-Pi provisioning installer require separate decisions; they are not enabled by this release.

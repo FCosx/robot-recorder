@@ -32,9 +32,51 @@ class TransportTests(unittest.TestCase):
         count=len(self.calls);self.assertFalse(self.configure()['changed'])
         self.assertEqual(len(self.calls),count)
 
-    def test_higher_tuning_is_not_lowered(self):
-        self.limit.write_text(str(32*1024**2));self.assertFalse(self.configure()['changed'])
-        self.assertEqual(self.calls,[])
+    def test_runtime_only_ceiling_is_persisted_even_when_already_sufficient(self):
+        self.limit.write_text(str(dds.KERNEL_CAP))
+        self.assertTrue(self.configure()['changed'])
+        self.assertEqual(self.limit.read_text(),str(dds.KERNEL_CAP))
+        self.assertIn(f'net.core.rmem_max = {dds.KERNEL_CAP}',self.config.read_text())
+        self.assertFalse(any(args[0]=='sysctl' for args in self.calls))
+        # At boot the kernel starts with its default; the saved sysctl must
+        # restore the value needed by the 4 MiB CycloneDDS socket profile.
+        self.limit.write_text('212992')
+        saved=int(self.config.read_text().split('=')[1].strip())
+        self.runner(['sysctl','-w',f'net.core.rmem_max={saved}'])
+        self.assertGreaterEqual(int(self.limit.read_text()),dds.KERNEL_CAP)
+        count=len(self.calls);self.assertFalse(self.configure()['changed'])
+        self.assertEqual(len(self.calls),count)
+
+    def test_higher_runtime_tuning_is_persisted_without_lowering_it(self):
+        stronger=32*1024**2;self.limit.write_text(str(stronger))
+        self.assertTrue(self.configure()['changed'])
+        self.assertEqual(int(self.limit.read_text()),stronger)
+        self.assertIn(f'net.core.rmem_max = {stronger}',self.config.read_text())
+        self.assertFalse(any(args[0]=='sysctl' for args in self.calls))
+        count=len(self.calls);self.assertFalse(self.configure()['changed'])
+        self.assertEqual(len(self.calls),count)
+
+    def test_higher_managed_persistent_tuning_is_not_overwritten(self):
+        stronger=32*1024**2
+        self.config.write_text(f'{dds.MARKER}\nnet.core.rmem_max = {stronger}\n')
+        self.limit.write_text(str(dds.KERNEL_CAP));before=self.config.read_text()
+        self.assertTrue(self.configure()['changed'])
+        self.assertEqual(int(self.limit.read_text()),stronger)
+        self.assertEqual(self.config.read_text(),before)
+        self.assertEqual([args[0] for args in self.calls],['sysctl'])
+
+    def test_unmanaged_file_is_preserved_when_runtime_ceiling_is_high(self):
+        self.limit.write_text(str(32*1024**2));self.config.write_text('user tuning\n')
+        with self.assertRaisesRegex(ValueError,'unmanaged'):self.configure()
+        self.assertEqual(self.calls,[]);self.assertEqual(self.config.read_text(),'user tuning\n')
+
+    def test_persistence_failure_with_sufficient_runtime_keeps_runtime_unchanged(self):
+        self.limit.write_text(str(dds.KERNEL_CAP));self.fail_move=True
+        with self.assertRaises(subprocess.CalledProcessError):self.configure()
+        self.assertEqual(int(self.limit.read_text()),dds.KERNEL_CAP)
+        self.assertFalse(self.config.exists())
+        self.assertFalse(self.config.with_name('.dds.conf.new').exists())
+        self.assertFalse(any(args[0]=='sysctl' for args in self.calls))
 
     def test_unmanaged_file_is_preserved(self):
         self.config.write_text('user tuning\n')

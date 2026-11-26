@@ -301,7 +301,7 @@ class Remote:
         with self.lock:
             self.check_metadata_ready()
             if (mode not in ('manual', 'automatic') or not self.cloud or not self.cloud.get('configured')
-                    or self.cloud.get('reachable') != 'reachable'):
+                    or (mode == 'automatic' and self.cloud.get('reachable') != 'reachable')):
                 raise ValueError('Cloud unavailable; check the connection and retry')
             self.pending = 'cloud'
             self.queue.put_nowait((Op.UPLOAD_MODE, self.latest, bytes([int(mode == 'automatic')])))

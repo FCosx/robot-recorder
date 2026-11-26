@@ -14,7 +14,7 @@ Download and install on the **operator laptop**:
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/robot-recorder/releases/download/v0.15.0/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/download/v0.15.1/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -107,7 +107,7 @@ After the maintainer configures cloud access, use the controls beside **Refresh 
 - **Manual upload** is the initial mode. Choose **Upload to cloud** on each completed recording you want to upload.
 - Switch to **Automatic upload** and confirm to upload completed recordings when the Pi is idle, including older local recordings.
 - **Stop uploads** stops compression, transfer and queued work, and returns the mode to Manual. Choose **Resume upload** on a recording to continue it; preparation or verification may repeat.
-- **Cloud connected** describes the Pi's cloud connection. New uploads and mode changes are unavailable while the cloud is unreachable. Radio connectivity alone does not establish cloud access.
+- **Cloud connected** describes the Pi's cloud connection. Starting uploads or enabling Automatic requires a reachable cloud. You can return to Manual or use **Stop uploads** even if cloud status is unavailable, provided the recorder/radio connection is working. Radio connectivity alone does not establish cloud access.
 - MCAP files are losslessly compressed using indexed Zstandard chunks before upload. Recording takes priority: compression and transfer pause before capture starts and can resume afterward.
 - **Uploaded to cloud** appears after all files pass read-back verification. Originals stay on the Pi until you choose **Delete**. Compression needs temporary free space.
 

@@ -17,6 +17,12 @@
 - 云端登录与下载、单话题/最多四话题同步回放、Fast/HD 图像、深度着色及交互式 3D 点云。
 - 可通过 NoMachine 使用机器人上的浏览器，无需操作笔记本始终接交换机网线。
 
+## 最新修复
+
+- 即使临时缓冲已够大，也持久保存 DDS 接收缓冲设置；Lenovo 机器人重启后无需登录即可重新连接。
+- 每个带宽助手使用独立 ROS 节点名，避免机器人连接状态误报。
+- 云端状态未知或不可用时仍可切回手动上传；开启自动模式及新增上传仍要求云端可达。
+
 ## 首次使用
 
 先看 [记录器使用手册](docs/user-manual.zh-CN.md)（[English](docs/user-manual.md)），按正常流程操作；遇到异常再看排查部分：
@@ -50,7 +56,7 @@ LoRa 控制端可离线安装，使用时无需树莓派 IP 或现场网络。Gi
 
 ## 仓库内容
 
-[Pi v0.15.0 发布](https://github.com/FCosx/robot-recorder/releases/tag/v0.15.0)包含匹配的 LoRa 安装器、已校验的 v2 ARM64/x86_64 桥包、manifest 和校验和。编译后的 **Pi ARM64** 录制器仅用于已准备好的 Ubuntu 24.04/Jazzy 记录器维护更新，见[可执行文件说明](docs/recorder-executable.zh-CN.md)，不能直接完成空白 Pi 的部署；普通用户无需编译。
+[Pi v0.15.1 发布](https://github.com/FCosx/robot-recorder/releases/tag/v0.15.1)包含匹配的 LoRa 安装器、已校验的 v2 ARM64/x86_64 桥包、manifest 和校验和。编译后的 **Pi ARM64** 录制器仅用于已准备好的 Ubuntu 24.04/Jazzy 记录器维护更新，见[可执行文件说明](docs/recorder-executable.zh-CN.md)，不能直接完成空白 Pi 的部署；普通用户无需编译。
 
 公开内容包括手册、机器人桥安装工具、LoRa 源码和加密配对授权。不公开录制/云端后端源码、登录凭据、明文配对、数据库、原始录制及私有构建归档。支持标准 ROS 消息类型，自定义类型暂不在支持范围。
 
@@ -60,4 +66,4 @@ LoRa 安装包含 pySerial 3.5，许可见 [第三方说明](THIRD_PARTY_NOTICES
 
 ## 验收与后续工作
 
-见 [Pi 验收与待验证项目](docs/pi-validation.zh-CN.md)（[English](docs/pi-validation.md)）。新 Pi 已通过小负载 LAN/LoRa 录制、切包边界完整性及真实重启检查；新板的持续吞吐、SSD 稳定性和主动散热表现仍需集中实测，不能将历史结果视为本次新板的实测结果。
+见 [Pi 验收与待验证项目](docs/pi-validation.zh-CN.md)（[English](docs/pi-validation.md)）。Lenovo → Pi 已完成 110 MiB/s 三分钟、80 MiB/s 五分钟测试，独立测量窗无缺失；SSD/USB 检查通过，CPU 峰值分别为 68.3°C／67.75°C。这些结果仅代表已测配置，不是通用无丢失上限。小包云端停止／恢复／录制优先及真实 RGB／深度／点云录制也已通过；Humble／ARM64 现场安装、NoMachine／Wi-Fi 访问和远距离 LoRa 仍待验收。

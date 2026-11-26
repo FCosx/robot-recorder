@@ -266,10 +266,14 @@ def main():
     from rosidl_runtime_py.utilities import get_message
     from std_msgs.msg import String
 
+    # Zenoh tracks local routes by ROS node name. Concurrent helpers with the
+    # same name share that route entry, so closing one can retire the other's
+    # heartbeat/control route. Keep identities unique across process lifetimes.
+    name = f'_recorder_bandwidth_{args.role}_{secrets.token_hex(8)}'
     context = Context()
-    context.init(args=['--ros-args', '-r', f'__node:=_recorder_bandwidth_{args.role}'], initialize_logging=False,
+    context.init(args=['--ros-args', '-r', f'__node:={name}'], initialize_logging=False,
                  domain_id=args.domain)
-    node = rclpy.create_node('_recorder_bandwidth_' + args.role, context=context,
+    node = rclpy.create_node(name, context=context,
                              enable_rosout=False, start_parameter_services=False)
     executor = SingleThreadedExecutor(context=context)
     executor.add_node(node)

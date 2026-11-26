@@ -128,3 +128,20 @@ class RadioCloudTests(unittest.TestCase):
         self.assertIsNone(self.remote.recordings_error)
         self.assertTrue(self.remote.recordings_loaded)
         self.assertEqual(self.remote.recordings_upload['recording-test']['state'], 'stopped')
+
+    def test_return_to_manual_uses_fresh_radio_even_when_cloud_is_offline(self):
+        for reachable in ('unreachable', 'unknown'):
+            with self.subTest(reachable=reachable):
+                self.api.value['cloud'].update(mode='automatic', reachable=reachable)
+                self.remote.accept_snapshot(self.agent.handle(Request(Op.STATUS, 50)))
+                self.remote.set_upload_mode('manual')
+                op, _, data = self.remote.queue.get_nowait()
+                self.assertEqual(op, Op.UPLOAD_MODE)
+                self.assertEqual(data, b'\x00')
+                self.assertEqual(self.remote.pending, 'cloud')
+                self.remote.pending = None
+                with self.assertRaises(ValueError):
+                    self.remote.set_upload_mode('automatic')
+        self.remote.received_at -= 100
+        with self.assertRaises(ValueError):
+            self.remote.set_upload_mode('manual')

@@ -37,7 +37,7 @@ Enter the **robot's sudo password** if asked. Setup selects a verified x86_64 or
 
 The final check reports Ethernet, the Pi recorder, the single corrected bridge, its helper and visible topics. Follow any **FAIL** instruction before recording. A **WARN** for no topics means the publishers may not be running yet. Wait for **Setup complete**; if interrupted, fix the reported problem and rerun while the recorder is idle.
 
-The bridge starts automatically at boot, waits for Ethernet and reconnects when the Pi is available. **Close the setup terminal; do not start another bridge manually.** A **Robot Recorder** shortcut is added to the robot's application menu; some desktops also show a desktop copy. Setup does not open the browser before you finish.
+The bridge starts automatically at boot, waits for Ethernet and reconnects when the Pi is available. Setup also saves the required DDS receive-buffer limit for future boots and preserves higher existing limits. **Close the setup terminal; do not start another bridge manually.** A **Robot Recorder** shortcut is added to the robot's application menu; some desktops also show a desktop copy. Setup does not open the browser before you finish.
 
 ### 4. Open the recorder
 
@@ -96,7 +96,7 @@ After the maintainer configures cloud access, use the controls beside **Refresh 
 - **Manual upload** is the initial mode. Choose **Upload to cloud** on each completed recording you want to upload.
 - Switch to **Automatic upload** and confirm to upload completed recordings when the Pi is idle, including older local recordings.
 - **Stop uploads** stops compression, transfer and queued work, and returns the mode to Manual. Choose **Resume upload** on a recording to continue it; preparation or verification may repeat.
-- **Cloud connected** describes the Pi's cloud connection. New uploads and mode changes are unavailable while the cloud is unreachable. Radio connectivity alone does not establish cloud access.
+- **Cloud connected** describes the Pi's cloud connection. Starting uploads or enabling Automatic requires a reachable cloud. You can return to Manual or use **Stop uploads** even if cloud status is unavailable, provided the recorder/radio connection is working. Radio connectivity alone does not establish cloud access.
 - MCAP files are losslessly compressed using indexed Zstandard chunks before upload. Recording takes priority: compression and transfer pause before capture starts and can resume afterward.
 - **Uploaded to cloud** appears after all files pass read-back verification. Originals stay on the Pi until you choose **Delete**. Compression needs temporary free space.
 
@@ -213,6 +213,10 @@ systemctl --user start robot-recorder-source-bridge.service    # Reconnect
 ```
 
 These are alternatives; do not run all three for a status check. Killing a managed bridge process causes it to restart automatically. A stopped service remains enabled for the next boot.
+
+### Bridge works now but fails after reboot
+
+While the recorder is idle, rerun the step-3 installer on the robot. It updates the helper and ensures the DDS receive-buffer limit is saved, even if a temporary setting already makes the bridge work. Keep the saved ROS domain; do not start a second bridge. The installer performs the setup check again. No reboot or separate tuning command is required to apply the update.
 
 ### Stop now and disable automatic startup
 

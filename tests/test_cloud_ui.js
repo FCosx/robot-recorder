@@ -28,7 +28,7 @@ function environment() {
     message: text => { throw Error(text); },
     api: async (endpoint, options) => {
       calls.push([endpoint, JSON.parse(options.body)]);
-      return {...sample.cloud, mode: 'automatic'};
+      return {...context.lastCloud || sample.cloud, mode: JSON.parse(options.body).mode};
     },
     command: (action, body) => calls.push([action, body])
   };
@@ -96,6 +96,16 @@ const sample = {radio_connected: true, synchronized: true, cloud: {
     draw({...sample.cloud, mode:'automatic'});
     assert.equal(node('cloud-mode').attributes['aria-checked'], 'true');
     assert.match(node('cloud-mode-help').textContent, /(?:Pi|the recorder) is idle/);
+    for (const reachable of ['unreachable', 'unknown']) {
+      draw({...sample.cloud, mode:'automatic', reachable});
+      assert.equal(node('cloud-mode').disabled, false, 'Returning to Manual is a local action');
+      if (remote) context.lastStatus = {...sample, cloud:{...sample.cloud, mode:'automatic', reachable}};
+      else context.lastCloud = {...sample.cloud, mode:'automatic', reachable};
+      context.confirm = () => {throw Error('Manual must not need confirmation');};
+      await context.change();
+      assert.deepEqual(JSON.parse(JSON.stringify(calls.at(-1)[1])), {mode:'manual'});
+      assert.notEqual(node('cloud-status').className, 'badge good', 'Manual must not pretend cloud is connected');
+    }
     if (remote) {
       context.draw({...sample, radio_connected:false});
       assert.equal(node('cloud-status').className, 'badge bad');

@@ -12,7 +12,7 @@
 
 ```bash
 curl -fL --retry 3 --retry-all-errors \
-  https://github.com/FCosx/robot-recorder/releases/download/v0.15.0/recorder-lora-remote.pyz \
+  https://github.com/FCosx/robot-recorder/releases/download/v0.15.1/recorder-lora-remote.pyz \
   -o recorder-lora-remote.pyz &&
 python3 recorder-lora-remote.pyz install
 ```
@@ -105,7 +105,7 @@ python3 -B ~/robot-recorder/tools/lora_recorder.py open
 - 初始为 **Manual upload（手动上传）**：在需要上传的录制条目上点击 **Upload to cloud**。
 - 切换到 **Automatic upload（自动上传）** 并确认后，树莓派空闲时自动上传已完成的录制，也包括以前保存的录制。
 - **Stop uploads** 停止压缩、传输及排队任务，并切回手动模式。需要继续时，点击对应录制的 **Resume upload**；部分准备或校验可能重新执行。
-- **Cloud connected** 表示树莓派可以访问云端。云端不可达时，不能新建上传任务或切换模式；LoRa 连接正常不代表云端可达。
+- **Cloud connected** 表示树莓派的云端连接。新增上传或开启自动模式需要云端可达；云端状态未知或不可用时，只要记录器／无线电连接正常，仍可切回手动或点击 **Stop uploads**。无线电连接正常不代表云端可用。
 - MCAP 先无损压缩为带索引的 Zstandard MCAP，再上传。录制始终优先：开始录制前暂停压缩和传输，录制结束后可继续。
 - 所有文件通过读回校验后才显示 **Uploaded to cloud**。原文件保留在树莓派，由用户决定是否删除；压缩需要临时空间。
 

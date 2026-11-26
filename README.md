@@ -17,6 +17,12 @@ A ROS 2 data recorder for robot experiments. Robots send topics to a Raspberry P
 - Cloud login, downloads, single/four-topic synchronized playback, Fast/HD images, depth colouring and interactive 3D point clouds.
 - Access the robot's browser through NoMachine when an operator laptop cannot stay wired to the switch.
 
+## Latest fixes
+
+- Persist DDS receive-buffer setup even when a temporary value is already sufficient; the Lenovo robot reconnects after reboot without signing in.
+- Give each bandwidth helper a unique ROS node identity to avoid false robot-disconnection reports.
+- Allow returning to Manual upload when cloud status is unknown or unavailable; enabling Automatic and starting uploads still require cloud access.
+
 ## First-time setup
 
 **Start with the [Recorder User Manual](docs/user-manual.md) ([中文](docs/user-manual.zh-CN.md)).** It provides copy-and-paste commands for the normal workflow, followed by troubleshooting for special cases:
@@ -50,7 +56,7 @@ The LoRa laptop can be installed offline and operated without the Pi's IP or acc
 
 ## Repository contents
 
-The [Pi release v0.15.0](https://github.com/FCosx/robot-recorder/releases/tag/v0.15.0) includes the matching LoRa installer, verified v2 ARM64/x86_64 bridge packages, manifest and checksums. The compiled **Pi ARM64** recorder is a maintenance update for an already prepared Ubuntu 24.04/Jazzy recorder; see [executable notes](docs/recorder-executable.md). It does not provision a blank Pi. Operators do not build anything.
+The [Pi release v0.15.1](https://github.com/FCosx/robot-recorder/releases/tag/v0.15.1) includes the matching LoRa installer, verified v2 ARM64/x86_64 bridge packages, manifest and checksums. The compiled **Pi ARM64** recorder is a maintenance update for an already prepared Ubuntu 24.04/Jazzy recorder; see [executable notes](docs/recorder-executable.md). It does not provision a blank Pi. Operators do not build anything.
 
 Public contents include guides, robot bridge/setup tools, LoRa source and encrypted pairing authorization. Private recorder/cloud backend source, login credentials, decrypted pairing, databases, raw recordings and private build archives remain excluded. Standard ROS message types are supported; custom types remain outside scope.
 
@@ -60,4 +66,4 @@ The LoRa installer includes pySerial 3.5; see [Third-party notices](THIRD_PARTY_
 
 ## Validation and remaining work
 
-See [Pi validation and remaining checks](docs/pi-validation.md) ([中文](docs/pi-validation.zh-CN.md)). The replacement Pi passed small LAN/LoRa captures, split-boundary integrity and real reboot checks. Its new sustained throughput, SSD stability and cooler performance still need a focused hardware run; historical results are not a fresh benchmark of this board.
+See [Pi validation and remaining checks](docs/pi-validation.md) ([中文](docs/pi-validation.zh-CN.md)). Lenovo-to-Pi tests saved 110 MiB/s for three minutes and 80 MiB/s for five minutes with no missing messages in the measured windows; SSD/USB checks passed and CPU peaks were 68.3°C/67.75°C. These are measured configurations, not a universal loss-free limit. Small cloud stop/resume/priority checks and a real RGB/depth/point-cloud capture also passed. New Humble/ARM64 field setup, NoMachine/Wi-Fi access and long-distance LoRa still need validation.

@@ -335,7 +335,7 @@ function renderCloud(d){
  const pending=d.pending==='cloud'||localAction==='cloud';
  const stopping=d.pending==='cloud-stop'||localAction==='cloud-stop';
  const busy=['compressing','uploading','verifying'].includes(cloud?.state);
- $('cloud-mode').disabled=!ready;
+ $('cloud-mode').disabled=!(metadataReady(d)&&cloud?.configured&&(automatic||ready));
  $('cloud-mode').setAttribute('aria-checked',String(automatic));
  $('cloud-mode').classList.toggle('is-busy',pending);
  $('cloud-mode-label').textContent=pending?'Applying…':automatic?'Automatic upload':'Manual upload';
